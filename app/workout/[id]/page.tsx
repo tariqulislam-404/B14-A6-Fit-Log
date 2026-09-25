@@ -1,0 +1,6 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { getWorkout } from '@/lib/api';
+import { DetailActions } from '@/components/detail-actions';
+export default async function WorkoutDetail({ params }: { params: { id: string } }) { const workout = await getWorkout(params.id); if (!workout) notFound(); return <section className="detail container"><div className="detail-visual"><Image src={workout.image} alt={workout.name} width={600} height={600} /></div><div><Link className="section-kicker" href="/">← BACK TO LIBRARY</Link><h1>{workout.name}</h1><p className="description">{workout.description}</p><div className="tags">{workout.categories.map(tag => <span className="tag" key={tag}>{tag}</span>)}</div><div className="specs">{[['Equipment', workout.equipment], ['Difficulty', workout.difficulty], ['Sets', workout.sets], ['Reps', workout.reps], ['Duration', `${workout.duration} min`], ['Calories', `${workout.calories} kcal`], ['Rating', workout.rating]].map(([label, value]) => <div className="spec" key={String(label)}><label>{label}</label><span>{value}</span></div>)}</div><div className="instructions"><h3>INSTRUCTIONS</h3><ol>{workout.instructions.map(step => <li key={step}>{step}</li>)}</ol></div><DetailActions workout={workout} /></div></section> }

@@ -1,0 +1,5 @@
+'use client';
+import { useMemo, useState } from 'react';
+import { Workout } from '@/lib/types';
+import { WorkoutCard } from './workout-card';
+export function HomeLibrary({workouts}:{workouts:Workout[]}){const [sort,setSort]=useState('duration');const ordered=useMemo(()=>[...workouts].sort((a,b)=>Number(a[sort as keyof Workout])-Number(b[sort as keyof Workout])),[workouts,sort]);return <section className="section container" id="library"><div className="section-heading"><div><span className="section-kicker">12 MOVEMENTS / ALL LEVELS</span><h2>The Library</h2><p>Twelve lifts covering every major muscle group.</p></div><label className="sort">Sort By <select aria-label="Sort workouts" value={sort} onChange={e=>setSort(e.target.value)}><option value="duration">Duration</option><option value="calories">Calories</option><option value="rating">Rating</option></select></label></div><div className="grid">{ordered.map(workout=><WorkoutCard key={workout.id} workout={workout}/>)}</div></section>}

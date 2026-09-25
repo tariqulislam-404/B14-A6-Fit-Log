@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function NotFound() { return <section className="container not-found"><div><span className="eyebrow">404 / LOST REP</span><h1>THIS PAGE MISSED THE SET.</h1><p className="description">The workout or route you requested does not exist.</p><Link className="button" href="/">Back to workouts</Link></div></section> }
