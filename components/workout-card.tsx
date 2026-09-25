@@ -1,0 +1,4 @@
+import Link from 'next/link';
+import Image from 'next/image';
+import { Workout } from '@/lib/types';
+export function WorkoutCard({workout}:{workout:Workout}){return <Link className="workout-card" href={`/workout/${workout.id}`}><div className="card-image"><Image src={workout.image} alt={workout.name} width={320} height={220}/></div><div className="card-body"><div className="tags">{workout.categories.map(tag=><span className="tag" key={tag}>{tag}</span>)}</div><h3>{workout.name}</h3><p className="equipment">{workout.equipment}</p><div className="stats"><span><b>◷</b>{workout.duration} min</span><span><b>◉</b>{workout.calories} kcal</span><span><b>★</b>{workout.rating}</span></div></div></Link>}
