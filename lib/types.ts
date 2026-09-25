@@ -1,7 +1,93 @@
-export type Workout = { id: string; name: string; categories: string[]; equipment: string; duration: number; calories: number; rating: number; difficulty: string; sets: number; reps: string; image: string; description: string; instructions: string[] };
+import banner from '../assets/banner.png';
 
-export const fallbackWorkouts: Workout[] = [
-    ['Barbell Bench Press', ['Chest', 'Arms'], 'Barbell, Bench', 25, 180, 4.8, 'Intermediate', 4, '6-8'], ['Back Squat', ['Legs', 'Glutes'], 'Barbell, Rack', 35, 240, 4.9, 'Advanced', 4, '5-8'], ['Deadlift', ['Back', 'Legs'], 'Barbell', 30, 260, 4.8, 'Advanced', 4, '5-6'], ['Dumbbell Row', ['Back', 'Arms'], 'Dumbbells, Bench', 20, 145, 4.7, 'Intermediate', 3, '8-12'], ['Overhead Press', ['Shoulders', 'Arms'], 'Barbell', 22, 155, 4.6, 'Intermediate', 3, '8-10'], ['Cable Fly', ['Chest'], 'Cable Machine', 18, 120, 4.5, 'Beginner', 3, '10-15'], ['Romanian Deadlift', ['Legs', 'Glutes'], 'Barbell', 28, 210, 4.8, 'Intermediate', 3, '8-10'], ['Pull Up', ['Back', 'Arms'], 'Pull-up Bar', 20, 170, 4.7, 'Advanced', 4, '6-10'], ['Goblet Squat', ['Legs'], 'Kettlebell', 18, 130, 4.6, 'Beginner', 3, '10-12'], ['Lateral Raise', ['Shoulders'], 'Dumbbells', 15, 90, 4.5, 'Beginner', 3, '12-15'], ['Bicep Curl', ['Arms'], 'Dumbbells', 15, 85, 4.4, 'Beginner', 3, '10-12'], ['Russian Twist', ['Core'], 'Medicine Ball', 12, 100, 4.6, 'Beginner', 3, '20']
-].map(([name, categories, equipment, duration, calories, rating, difficulty, sets, reps], index) => ({ id: String(index + 1), name: name as string, categories: categories as string[], equipment: equipment as string, duration: duration as number, calories: calories as number, rating: rating as number, difficulty: difficulty as string, sets: sets as number, reps: reps as string, image: '/assets/banner.png', description: 'A focused movement designed to build strength, control, and confident training intent.', instructions: ['Set up with a stable stance and controlled posture.', 'Brace your core and move through the full range.', 'Keep the tempo steady without rushing the hard part.', 'Return to the start and repeat for each prescribed rep.'] }));
+export type Workout = {
+    id: string;
+    name: string;
+    categories: string[];
+    equipment: string;
+    duration: number;
+    calories: number;
+    rating: number;
+    difficulty: string;
+    sets: number;
+    reps: string;
+    image: string;
+    description: string;
+    instructions: string[];
+};
 
-export function normalizeWorkout(value: any, index: number): Workout { const base = fallbackWorkouts[index % fallbackWorkouts.length]; const categories = value.categories ?? value.category ?? base.categories; return { ...base, id: String(value.id ?? index + 1), name: value.name ?? value.title ?? base.name, categories: Array.isArray(categories) ? categories : [categories], equipment: value.equipment ?? base.equipment, duration: Number(value.duration ?? base.duration), calories: Number(value.calories ?? base.calories), rating: Number(value.rating ?? base.rating), image: value.image ?? value.imageUrl ?? base.image, description: value.description ?? base.description, instructions: Array.isArray(value.instructions) ? value.instructions : base.instructions, difficulty: value.difficulty ?? base.difficulty, sets: Number(value.sets ?? base.sets), reps: value.reps ?? base.reps }; }
+type WorkoutFields = Omit<Workout, 'id' | 'image' | 'description' | 'instructions'>;
+
+const fallbackFields: WorkoutFields[] = [
+    { name: 'Barbell Bench Press', categories: ['Chest', 'Arms'], equipment: 'Barbell, Bench', duration: 25, calories: 180, rating: 4.8, difficulty: 'Intermediate', sets: 4, reps: '6-8' },
+    { name: 'Back Squat', categories: ['Legs', 'Glutes'], equipment: 'Barbell, Rack', duration: 35, calories: 240, rating: 4.9, difficulty: 'Advanced', sets: 4, reps: '5-8' },
+    { name: 'Deadlift', categories: ['Back', 'Legs'], equipment: 'Barbell', duration: 30, calories: 260, rating: 4.8, difficulty: 'Advanced', sets: 4, reps: '5-6' },
+    { name: 'Dumbbell Row', categories: ['Back', 'Arms'], equipment: 'Dumbbells, Bench', duration: 20, calories: 145, rating: 4.7, difficulty: 'Intermediate', sets: 3, reps: '8-12' },
+    { name: 'Overhead Press', categories: ['Shoulders', 'Arms'], equipment: 'Barbell', duration: 22, calories: 155, rating: 4.6, difficulty: 'Intermediate', sets: 3, reps: '8-10' },
+    { name: 'Cable Fly', categories: ['Chest'], equipment: 'Cable Machine', duration: 18, calories: 120, rating: 4.5, difficulty: 'Beginner', sets: 3, reps: '10-15' },
+    { name: 'Romanian Deadlift', categories: ['Legs', 'Glutes'], equipment: 'Barbell', duration: 28, calories: 210, rating: 4.8, difficulty: 'Intermediate', sets: 3, reps: '8-10' },
+    { name: 'Pull Up', categories: ['Back', 'Arms'], equipment: 'Pull-up Bar', duration: 20, calories: 170, rating: 4.7, difficulty: 'Advanced', sets: 4, reps: '6-10' },
+    { name: 'Goblet Squat', categories: ['Legs'], equipment: 'Kettlebell', duration: 18, calories: 130, rating: 4.6, difficulty: 'Beginner', sets: 3, reps: '10-12' },
+    { name: 'Lateral Raise', categories: ['Shoulders'], equipment: 'Dumbbells', duration: 15, calories: 90, rating: 4.5, difficulty: 'Beginner', sets: 3, reps: '12-15' },
+    { name: 'Bicep Curl', categories: ['Arms'], equipment: 'Dumbbells', duration: 15, calories: 85, rating: 4.4, difficulty: 'Beginner', sets: 3, reps: '10-12' },
+    { name: 'Russian Twist', categories: ['Core'], equipment: 'Medicine Ball', duration: 12, calories: 100, rating: 4.6, difficulty: 'Beginner', sets: 3, reps: '20' }
+];
+
+export const fallbackWorkouts: Workout[] = fallbackFields.map((fields, index) => ({
+    ...fields,
+    id: String(index + 1),
+    image: banner.src,
+    description: 'A focused movement designed to build strength, control, and confident training intent.',
+    instructions: [
+        'Set up with a stable stance and controlled posture.',
+        'Brace your core and move through the full range.',
+        'Keep the tempo steady without rushing the hard part.',
+        'Return to the start and repeat for each prescribed rep.'
+    ]
+}));
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function readText(value: unknown, fallback: string): string {
+    return typeof value === 'string' && value.trim() ? value : fallback;
+}
+
+function readNumber(value: unknown, fallback: number): number {
+    const number = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(number) ? number : fallback;
+}
+
+export function normalizeWorkout(value: unknown, index: number): Workout {
+    const item = isRecord(value) ? value : {};
+    const base = fallbackWorkouts[index % fallbackWorkouts.length];
+    const rawCategories = item.categories ?? item.category;
+    const categories = Array.isArray(rawCategories)
+        ? rawCategories.filter((category): category is string => typeof category === 'string' && category.trim().length > 0)
+        : typeof rawCategories === 'string' && rawCategories.trim()
+            ? [rawCategories]
+            : base.categories;
+    const rawId = item.id;
+    const id = typeof rawId === 'string' || typeof rawId === 'number' ? String(rawId) : base.id;
+    const rawReps = item.reps;
+
+    return {
+        ...base,
+        id,
+        name: readText(item.name ?? item.title, base.name),
+        categories: categories.length ? categories : base.categories,
+        equipment: readText(item.equipment, base.equipment),
+        duration: readNumber(item.duration, base.duration),
+        calories: readNumber(item.calories, base.calories),
+        rating: readNumber(item.rating, base.rating),
+        difficulty: readText(item.difficulty, base.difficulty),
+        sets: readNumber(item.sets, base.sets),
+        reps: typeof rawReps === 'string' || typeof rawReps === 'number' ? String(rawReps) : base.reps,
+        image: readText(item.image ?? item.imageUrl, base.image),
+        description: readText(item.description, base.description),
+        instructions: Array.isArray(item.instructions)
+            ? item.instructions.filter((instruction): instruction is string => typeof instruction === 'string')
+            : base.instructions
+    };
+}
